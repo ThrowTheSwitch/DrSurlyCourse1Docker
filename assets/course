@@ -1,7 +1,6 @@
 #!/bin/bash
 
 TMP="/tmp/project"
-PROJECT_HOME="/lab"
 PROJECT_ARCHIVE="awesomesauce.zip"
 
 # If no command line parameters given, provide usage banner
@@ -40,11 +39,11 @@ if [ "$(ls -A $PROJECT_HOME)" ]; then
 fi
 
 # Extract archive listing and regex to determine base directory of files
-BASEDIR=`unzip -l /home/drsurly/$PROJECT_ARCHIVE | grep -E -o 'mvandervoord[^/]+' | head -1`
+BASEDIR=`unzip -l $DR_SURLY_HOME/$PROJECT_ARCHIVE | grep -E -o 'mvandervoord[^/]+' | head -1`
 
 # Extract the archive
 echo "> Extracting project..."
-unzip -q "/home/drsurly/$PROJECT_ARCHIVE" -d $TMP
+unzip -q "$DR_SURLY_HOME/$PROJECT_ARCHIVE" -d $TMP
 
 # Delete any git junk -- first files and then directories
 find $TMP -type f -iname ".git*" -delete
@@ -52,6 +51,9 @@ find $TMP -type d -name ".git" -exec rm -rf "{}" \;
 
 # Move extracted contents below $basedir to new base directory of /lab
 mv "$TMP/$BASEDIR"/* "$PROJECT_HOME"
+
+# Move start_lab convenience scripts inside Docker image to /lab
+mv "$DR_SURLY_HOME"/start_lab* "$PROJECT_HOME"
 
 chmod +x "$PROJECT_HOME"/start_lab
 

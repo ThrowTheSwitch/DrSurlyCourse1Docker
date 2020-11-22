@@ -2,6 +2,8 @@ FROM alpine:3.11
 
 MAINTAINER Michael Karlesky <michael@karlesky.net>
 
+ENV PROJECT_HOME   /lab
+ENV DR_SURLY_HOME  /home/drsurly
 
 RUN set -ex \
   && apk update \
@@ -19,7 +21,8 @@ RUN set -ex \
 ##
 
 COPY assets/course            /usr/local/bin
-COPY assets/awesomesauce.zip  /home/drsurly/awesomesauce.zip
+COPY assets/start_lab*        $DR_SURLY_HOME/
+COPY assets/awesomesauce.zip  $DR_SURLY_HOME/
 
 RUN chmod +x /usr/local/bin/course
 
@@ -28,10 +31,10 @@ RUN chmod +x /usr/local/bin/course
 ## Programming environment setup
 ##
 
-RUN mkdir /lab
+RUN mkdir $PROJECT_HOME
 
 # Working directory at container launch
-WORKDIR /lab
+WORKDIR $PROJECT_HOME
 
 # When the container launches, run a shell that launches in WORKDIR
 CMD ["/bin/sh"]
